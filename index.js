@@ -1,4 +1,4 @@
-const { select, input, checkbox } = require('@inquirer/prompts')
+const { select, input, checkbox } = require("@inquirer/prompts")
 
 let meta = {
   value: "Tomar 3L de água por dia",
@@ -34,8 +34,6 @@ const listarMetas = async () => {
     return
   }
 
-  
-
   respostas.forEach((resposta) => {
     const meta = metas.find((m) => {
       return m.value == resposta
@@ -43,7 +41,7 @@ const listarMetas = async () => {
 
     meta.checked = true
   })
-  message: 'Meta(s) marcadas como concluída(s)'
+  message: "Meta(s) marcadas como concluída(s)"
   console.log("Meta(s) marcadas como concluída(s)")
 }
 
@@ -52,14 +50,30 @@ const metasRealizadas = async () => {
     return meta.checked
   })
 
-  if(realizadas.length == 0) {
-    console.log('Não existem metas realizadas! :(')
+  if (realizadas.length == 0) {
+    console.log("Não existem metas realizadas! :(")
     return
   }
 
   await select({
-    message: 'Metas realizadas',
-    choices: [...realizadas]
+    message: "Metas realizadas " + realizadas.length,
+    choices: [...realizadas],
+  })
+}
+
+const metasAbertas = async () => {
+  const abertas = metas.filter((meta) => {
+    return meta.checked != true
+  })
+
+  if (abertas.length == 0) {
+    console.log('Não existem metas abertas! :)')
+    return
+  }
+
+  await select({
+    message: 'Metas Abertas ' + abertas.length,
+    choices: [...abertas]
   })
 }
 
@@ -81,6 +95,10 @@ const start = async () => {
           value: "realizadas",
         },
         {
+          name: "Metas abertas",
+          value: "abertas",
+        },
+        {
           name: "Sair",
           value: "sair",
         },
@@ -95,9 +113,14 @@ const start = async () => {
       case "listar":
         await listarMetas()
         break
-        case 'realizadas':
-          await metasRealizadas()
-          break
+      case "realizadas":
+        await metasRealizadas()
+        break
+
+      case "abertas":
+        await metasAbertas()
+        break
+
       case "sair":
         console.log("Até a próxima!")
         return
